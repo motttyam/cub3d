@@ -1,15 +1,14 @@
 NAME = cub3D
 
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Werror -Wextra
-CSANITIZE = -g -fsanitize=address
+
+CSANITIZE = -g -fsanitize=address -DGL_SILENCE_DEPRECATION
 
 RM = rm -f
 
-
 # LIBFT_DIR = ./libft
 # LIBFT = $(LIBFT_DIR)/libft.a
-
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
@@ -22,8 +21,8 @@ else
     LIBS = -lm -lmlx -framework OpenGL -framework AppKit
 endif
 
-INCLUDES = -I$(MINILIBX_DIR) -I$(LIBFT_DIR)
-LDFLAGS = -L$(MINILIBX_DIR) -L$(LIBFT_DIR)
+INCLUDES = -I$(MINILIBX_DIR) 
+LDFLAGS = -L$(MINILIBX_DIR)
 
 SRCDIR = ./srcs
 SRCS = ${wildcard $(SRCDIR)/*.c}
@@ -35,8 +34,8 @@ all:$(NAME)
 $(NAME): $(OBJS) $(MINILIBX) $(LIBFT)
 	$(CC) $(OBJS) $(LDFLAGS) $(LIBS) -o $(NAME)
 
-%.o:%.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) $(CSANITIZE) $(INCLUDES) -c $< -o $@
 
 $(MINILIBX):
 	$(MAKE) -C $(MINILIBX_DIR)
@@ -45,12 +44,12 @@ $(MINILIBX):
 # 	$(MAKE) -C $(LIBFT_DIR)
 
 clean:
-	$(MAKE) -C $(LIBFT_DIR) clean
-	$(MAKE) -C $(MINILIBX_DIR) clean
+#$(MAKE) clean -C $(LIBFT_DIR)
+	$(MAKE) clean -C $(MINILIBX_DIR)
 	$(RM) $(OBJS)
 
 fclean: clean
-	$(MAKE) fclean -C $(LIBFT_DIR)
+# $(MAKE) fclean -C $(LIBFT_DIR)
 	$(RM) $(NAME) $(MINILIBX_DIR)/$(MINILIBX)
 
 re: fclean all
